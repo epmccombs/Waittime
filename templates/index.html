@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dining Hall Wait Time</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+    <header>
+        <h1>Real-Time Dining Hall Wait Time</h1>
+    </header>
+
+    <div class="container">
+        <div class="data-section">
+            <div class="card">
+                <h2>People in Line</h2>
+                <p id="people-count">Loading...</p>
+            </div>
+            <div class="card">
+                <h2>Estimated Wait Time</h2>
+                <p id="wait-time">Loading...</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Dining Hall Wait Time Tracker</p>
+    </footer>
+
+    <script>
+        // Function to fetch data from the server and update the page
+        function updateData() {
+            fetch('/data')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('people-count').textContent = data.people_count;
+                    document.getElementById('wait-time').textContent = data.wait_time + ' sec';
+                });
+        }
+
+        // Call updateData every 2 seconds to get fresh data
+        setInterval(updateData, 2000);
+
+        // Call updateData once immediately when the page loads
+        updateData();
+    </script>
+
+</body>
+</html>
+
