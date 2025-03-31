@@ -4,6 +4,7 @@ import threading
 from flask import Flask, render_template, jsonify
 from ultralytics import YOLO
 import numpy as np
+import os
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -81,8 +82,8 @@ def data():
     cv2.putText(resized_frame, f"Wait Time: {wait_time} sec", (20, 90),
                 cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
-    # Show the frame with bounding boxes on your laptop screen
-    cv2.imshow("Real-Time Dining Hall Feed", resized_frame)
+    # Show the frame with bounding boxes on your laptop screen (only for local testing)
+    # cv2.imshow("Real-Time Dining Hall Feed", resized_frame)  # Comment out this line for Render
 
     # Return the people count and wait time to the website
     return jsonify({'people_count': person_count, 'wait_time': wait_time})
@@ -90,20 +91,6 @@ def data():
 # Main block to run Flask app
 if __name__ == '__main__':
     # Run Flask without reloader to avoid issues with threading
-    app.run(debug=True, host='0.0.0.0', port=8000, use_reloader=False)
-
-    # Show the camera feed on your laptop
-    while True:
-        # You can show the frame on your laptop here, separate from the Flask app
-        with lock:
-            if frame is not None:
-                cv2.imshow("Real-Time Dining Hall Feed", frame)
-
-        # Exit on 'q' key press
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-
-    # Release the video capture object
-    cap.release()
-    cv2.destroyAllWindows()
+    port = int(os.environ.get("PORT", 10000))  # Use Render's port or default to 10000
+    app.run(debug=False, host='0.0.0.0', port=port, use_reloader=False)
 
